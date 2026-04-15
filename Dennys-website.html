@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Denny's — America's Diner®</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Trebuchet MS',Arial,sans-serif;background:#fff;color:#1a1a1a}
+:root{--red:#CC0000;--yellow:#FFD200}
+
+.nav{background:var(--red);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:900;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+.logo{color:var(--yellow);font-size:27px;font-weight:900;font-style:italic;letter-spacing:-1px;cursor:pointer;user-select:none}
+.logo span{color:#fff}
+.nav-links{display:flex;gap:22px;align-items:center}
+.nav-links a{color:#fff;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:color .15s}
+.nav-links a:hover{color:var(--yellow)}
+.search-btn{background:var(--yellow);border:none;border-radius:50%;width:33px;height:33px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.search-btn:hover{background:#e6bd00}
+
+.api-banner{background:#e8f4fd;border-left:4px solid #4285f4;padding:14px 24px;font-size:13px;color:#1a3a5c;display:none}
+.api-banner.show{display:block}
+.api-banner strong{color:#4285f4}
+.api-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.api-row input{flex:1;min-width:200px;padding:8px 12px;border:1px solid #ccc;border-radius:4px;font-size:13px;font-family:monospace}
+.api-row button{background:#4285f4;color:#fff;border:none;padding:8px 18px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:700}
+.api-row button:hover{background:#2d6fd4}
+
+.search-bar{background:var(--yellow);padding:14px 28px;display:none;align-items:center;gap:10px}
+.search-bar.open{display:flex}
+.search-bar label{font-size:13px;font-weight:700;white-space:nowrap}
+.search-bar input{flex:1;padding:10px 14px;border:2px solid #1a1a1a;border-radius:4px;font-size:14px;outline:none}
+.search-bar input:focus{border-color:var(--red)}
+.search-bar button{background:var(--red);color:#fff;border:none;padding:10px 22px;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer}
+.search-results{margin:0 28px;border:2px solid var(--red);border-top:none;border-radius:0 0 6px 6px;padding:16px 18px;display:none;background:#fff}
+.search-results.on{display:block}
+.sr-thinking{color:var(--red);font-style:italic;font-size:14px}
+.sr-answer{font-size:14px;line-height:1.7}
+.sr-answer strong{color:var(--red)}
+
+.hero{min-height:400px;display:flex;align-items:center;padding:60px 48px;background:#1a1a1a;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 75% 50%,#7a0000 0%,#1a1a1a 65%)}
+.hero-deco{position:absolute;right:52px;top:50%;transform:translateY(-50%);font-size:200px;opacity:.07;pointer-events:none;line-height:1}
+.hero-inner{position:relative;z-index:1;max-width:580px}
+.hero-badge{background:var(--yellow);color:#1a1a1a;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;display:inline-block;margin-bottom:16px}
+.hero-title{font-size:50px;font-weight:900;color:#fff;line-height:1.05;margin-bottom:14px;font-style:italic}
+.hero-title em{color:var(--yellow);font-style:normal}
+.hero-sub{color:#bbb;font-size:16px;line-height:1.6;margin-bottom:26px}
+.btn-y{background:var(--yellow);color:#1a1a1a;border:none;padding:13px 26px;font-size:14px;font-weight:700;border-radius:4px;cursor:pointer;text-transform:uppercase}
+.btn-y:hover{background:#e6bd00}
+.btn-o{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.35);padding:13px 26px;font-size:14px;font-weight:700;border-radius:4px;cursor:pointer;text-transform:uppercase;margin-left:10px}
+.btn-o:hover{border-color:var(--yellow);color:var(--yellow)}
+
+.ticker{background:var(--red);padding:12px 28px;display:flex;gap:36px;overflow-x:auto;scrollbar-width:none}
+.ticker::-webkit-scrollbar{display:none}
+.tick-item{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tick-icon{font-size:18px}
+.tick-text{color:#fff;font-size:13px;font-weight:600}
+.tick-text span{color:var(--yellow)}
+
+.menu-sec{padding:44px 28px}
+.sec-title{font-size:30px;font-weight:900;font-style:italic;margin-bottom:4px}
+.sec-title em{color:var(--red);font-style:normal}
+.sec-sub{color:#777;font-size:14px;margin-bottom:22px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.tab{background:#f0f0f0;border:none;padding:8px 18px;font-size:12px;font-weight:700;border-radius:20px;cursor:pointer;color:#555;transition:background .15s,color .15s;text-transform:uppercase}
+.tab:hover{background:#ddd}
+.tab.on{background:var(--red);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.card{border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.1)}
+.card-img{background:#fdf5e6;height:126px;display:flex;align-items:center;justify-content:center;font-size:58px}
+.card-body{padding:13px}
+.card-name{font-size:14px;font-weight:700;margin-bottom:3px;line-height:1.3}
+.card-cal{font-size:11px;color:#999;margin-bottom:5px}
+.card-desc{font-size:12px;color:#888;line-height:1.4;margin-bottom:10px}
+.card-foot{display:flex;align-items:center;justify-content:space-between}
+.card-price{font-size:15px;font-weight:700;color:var(--red)}
+.card-add{background:var(--red);color:#fff;border:none;padding:5px 11px;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer}
+.card-add:hover{background:#aa0000}
+.badge{background:var(--yellow);color:#1a1a1a;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;float:right;margin-left:4px;margin-top:1px}
+
+.why{background:#1a1a1a;padding:52px 28px}
+.why-title{font-size:26px;font-weight:900;color:var(--yellow);font-style:italic;text-align:center;margin-bottom:32px}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:24px;max-width:880px;margin:0 auto}
+.why-item{text-align:center}
+.why-icon{font-size:38px;margin-bottom:10px}
+.why-name{color:var(--yellow);font-size:14px;font-weight:700;margin-bottom:6px}
+.why-text{color:#999;font-size:12px;line-height:1.55}
+
+footer{background:var(--red);padding:26px 28px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.foot-logo{color:var(--yellow);font-size:22px;font-weight:900;font-style:italic}
+.foot-links{display:flex;gap:18px;flex-wrap:wrap}
+.foot-links a{color:rgba(255,255,255,.8);font-size:12px;text-decoration:none;cursor:pointer}
+.foot-links a:hover{color:var(--yellow)}
+.foot-copy{color:rgba(255,255,255,.5);font-size:11px}
+
+.chat-btn{position:fixed;bottom:26px;right:26px;background:var(--yellow);color:#1a1a1a;border:none;width:58px;height:58px;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 18px rgba(255,210,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center;transition:transform .15s,background .15s}
+.chat-btn:hover{background:#1300e6;transform:scale(1.08)}
+.chat-win{position:fixed;bottom:94px;right:26px;width:355px;background:#fff;border-radius:14px;box-shadow:0 10px 36px rgba(0,0,0,.22);z-index:1000;display:none;flex-direction:column;overflow:hidden;border:1px solid #e0e0e0}
+.chat-win.open{display:flex}
+.chat-head{background:var(--red);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.chat-av{width:34px;height:34px;background:var(--yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.chat-ht .t{font-size:14px;font-weight:700;color:#fff}
+.chat-ht .s{font-size:11px;color:rgba(255,255,255,.75);margin-top:1px}
+.chat-x{margin-left:auto;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;max-height:330px;min-height:180px}
+.msg{max-width:87%;padding:9px 12px;border-radius:13px;font-size:13px;line-height:1.5}
+.msg.bot{background:#f2f2f2;color:#1a1a1a;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:var(--red);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.thinking{background:#f2f2f2;color:#999;font-style:italic;align-self:flex-start}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px}
+.chip{background:#fff0f0;color:var(--red);border:1px solid var(--red);border-radius:16px;padding:4px 10px;font-size:11px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s}
+.chip:hover{background:var(--red);color:#fff}
+.input-row{display:flex;border-top:1px solid #e8e8e8}
+.chat-input{flex:1;border:none;padding:12px 14px;font-size:13px;outline:none}
+.chat-send{background:var(--red);color:#fff;border:none;padding:0 16px;font-size:18px;cursor:pointer}
+.chat-send:hover{background:#aa0000}
+</style>
+</head>
+<body>
+
+<!-- API KEY BANNER -->
+<div class="api-banner show" id="apiBanner">
+  <strong>🔑 Google AI Studio API Key Required</strong> — Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#4285f4">aistudio.google.com/apikey</a>. Stored only in your browser session.
+  <div class="api-row">
+    <input type="password" id="apiKey" placeholder="AIza..."/>
+    <button onclick="saveKey()">Save Key</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="logo">DENNY<span>'S</span></div>
+  <div class="nav-links">
+    <a onclick="go('menuSec')">Menu</a>
+    <a>Rewards</a>
+    <a>Order Now</a>
+    <a>Locations</a>
+    <button class="search-btn" onclick="toggleSearch()" title="AI Search">🔍</button>
+  </div>
+</nav>
+
+<!-- AI SEARCH -->
+<div class="search-bar" id="searchBar">
+  <label>🤖 AI Search:</label>
+  <input id="searchQ" type="text" placeholder='Try "gluten-free", "best value under $10", "something sweet"' onkeydown="if(event.key==='Enter')doSearch()"/>
+  <button onclick="doSearch()">Search</button>
+</div>
+<div class="search-results" id="searchRes"><div id="searchBody"></div></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-deco">🥞</div>
+  <div class="hero-inner">
+    <div class="hero-badge">America's Diner® · Open 24/7</div>
+    <h1 class="hero-title">It's Always<br><em>Diner Time.</em></h1>
+    <p class="hero-sub">Pancakes, Slams®, burgers, and comfort classics — made fresh, served all day, every day since 1953.</p>
+    <button class="btn-y" onclick="go('menuSec')">Browse Full Menu</button>
+    <button class="btn-o">Order Now</button>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="tick-item"><span class="tick-icon">⭐</span><span class="tick-text">Slammin' Meal Deals from <span>$5.99</span></span></div>
+  <div class="tick-item"><span class="tick-icon">🥞</span><span class="tick-text">All-Day Breakfast <span>24/7</span></span></div>
+  <div class="tick-item"><span class="tick-icon">🎁</span><span class="tick-text">Rewards — Earn <span>10 Booth Bucks</span> per $1</span></div>
+  <div class="tick-item"><span class="tick-icon">🚗</span><span class="tick-text">Curbside Pickup & Delivery Available</span></div>
+  <div class="tick-item"><span class="tick-icon">👶</span><span class="tick-text">Kids Eat FREE every <span>Tuesday 4–10pm</span></span></div>
+</div>
+
+<!-- MENU -->
+<div class="menu-sec" id="menuSec">
+  <div class="sec-title">Browse Our Full Menu of <em>Delicious Options</em></div>
+  <div class="sec-sub">All-day breakfast, hearty Slams, burgers, dinners, desserts & more — something for everyone, any time of day.</div>
+  <div class="tabs" id="tabRow"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- WHY -->
+<div class="why">
+  <div class="why-title">Why Denny's?</div>
+  <div class="why-grid">
+    <div class="why-item"><div class="why-icon">🕐</div><div class="why-name">Open 24/7</div><div class="why-text">Hunger doesn't have a bedtime. We're always open — even on holidays.</div></div>
+    <div class="why-item"><div class="why-icon">🥞</div><div class="why-name">All-Day Breakfast</div><div class="why-text">Pancakes at midnight? Eggs for dinner? Always a yes at Denny's.</div></div>
+    <div class="why-item"><div class="why-icon">💰</div><div class="why-name">Real Value</div><div class="why-text">Slammin' Meal Deals from $5.99. Full meals that never break the bank.</div></div>
+    <div class="why-item"><div class="why-icon">🚗</div><div class="why-name">Pickup & Delivery</div><div class="why-text">Order online for curbside pickup or delivery right to your door.</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-logo">DENNY'S</div>
+  <div class="foot-links">
+    <a>Menu</a><a>Rewards</a><a>Careers</a><a>Franchising</a><a>Privacy Policy</a><a>Contact</a>
+  </div>
+  <div class="foot-copy">© 2026 Denny's Inc. All Rights Reserved.</div>
+</footer>
+
+<!-- CHATBOT -->
+<button class="chat-btn" onclick="toggleChat()" title="Chat with Denny Bot">💬</button>
+<div class="chat-win" id="chatWin">
+  <div class="chat-head">
+    <div class="chat-av">🍳</div>
+    <div class="chat-ht"><div class="t">Denny Bot</div><div class="s">Powered by Gemini 2.5 Flash</div></div>
+    <button class="chat-x" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  <div class="chips" id="chips">
+    <span class="chip" onclick="qsend(this)">Best breakfast?</span>
+    <span class="chip" onclick="qsend(this)">Cheapest meal?</span>
+    <span class="chip" onclick="qsend(this)">Gluten-free?</span>
+    <span class="chip" onclick="qsend(this)">Kids menu?</span>
+    <span class="chip" onclick="qsend(this)">What's a Slam?</span>
+  </div>
+  <div class="input-row">
+    <input class="chat-input" id="chatIn" placeholder="Ask about the menu..." onkeydown="if(event.key==='Enter')send()"/>
+    <button class="chat-send" onclick="send()">➤</button>
+  </div>
+</div>
+
+<script>
+// ── MENU DATA ──────────────────────────────────────────────────────────────
+const MENU = {
+  "Featured": [
+    {name:"Berry Waffle Slam®",cal:"1110–1520",price:"$18.59",desc:"Golden Belgian waffles with fresh mixed berries and whipped cream. Served with eggs, hash browns, bacon or sausage.",emoji:"🧇",badge:""},
+    {name:"Cinnamon Apple Crisp Pancake Slam®",cal:"1660–1840",price:"$14.19",desc:"Buttermilk pancakes topped with cinnamon apple crisp filling. Served with eggs, hash browns, bacon or sausage.",emoji:"🥞",badge:"New"},
+    {name:"Berry Stuffed French Toast Slam®",cal:"1090–1500",price:"$17.79",desc:"Brioche French toast stuffed with berry cream and topped with fresh berries. Served with eggs, hash browns, bacon or sausage.",emoji:"🍞",badge:""},
+    {name:"Triple Juicy Burger",cal:"1400–1790",price:"$15.99",desc:"Three beef patties stacked with triple cheese, lettuce, tomato and pickles on a brioche bun.",emoji:"🍔",badge:"New"},
+    {name:"Salted Caramel Cold Brew",cal:"410",price:"$6.69",desc:"Smooth cold brew with rich salted caramel syrup and sweet cream.",emoji:"☕",badge:"New"},
+    {name:"Peppermint Hot Chocolate",cal:"310",price:"$3.49",desc:"Creamy hot chocolate swirled with peppermint.",emoji:"🍵",badge:"New"},
+  ],
+  "Combos": [
+    {name:"Grand Slam Pack",cal:"4000–4460",price:"$30.99",desc:"Family-sized pack — pancakes, eggs, bacon and sausage for the whole table.",emoji:"📦",badge:"Family"},
+    {name:"Grand Slamwich® Combo",cal:"1230–1620",price:"$14.99",desc:"Grand Slamwich with eggs, bacon, sausage, ham and American cheese on sourdough, plus a drink.",emoji:"🥪",badge:""},
+    {name:"Moons Over My Hammy® Combo",cal:"1150–1540",price:"$13.89",desc:"Ham and egg sandwich with Swiss & American on sourdough, hash browns and OJ.",emoji:"🌙",badge:""},
+    {name:"Slam Burger Combo",cal:"varies",price:"$13.99",desc:"A juicy Slamburger with fries and a soft drink.",emoji:"🍔",badge:""},
+  ],
+  "Classic Slams": [
+    {name:"Original Grand Slam®",cal:"640–1070",price:"$10.99",desc:"Two buttermilk pancakes, two eggs, two bacon strips and two sausage links. The one that started it all.",emoji:"🥞",badge:"Classic"},
+    {name:"All-American Slam®",cal:"820–1250",price:"$13.49",desc:"Scrambled eggs, Applewood-smoked bacon, sausage links and crispy hash browns.",emoji:"🇺🇸",badge:"Best Seller"},
+    {name:"Lumberjack Slam®",cal:"1050–1480",price:"$14.49",desc:"Buttermilk pancakes, eggs your way, bacon, sausage, grilled ham and hash browns.",emoji:"🪓",badge:"Hearty"},
+    {name:"Build Your Own Slam®",cal:"varies",price:"$8.99",desc:"Pick any four items: eggs, pancakes, bacon, sausage, hash browns and more.",emoji:"⭐",badge:"Value"},
+    {name:"Everyday Value Slam®",cal:"830–1160",price:"$5.99",desc:"Two eggs, two bacon strips or sausage links, hash browns and toast.",emoji:"🍳",badge:"$5.99"},
+    {name:"Super Slam®",cal:"990–1360",price:"$9.99",desc:"Two eggs, two bacon, two sausage, two pancakes and hash browns.",emoji:"💥",badge:""},
+    {name:"Belgian Waffle Slam®",cal:"860–1290",price:"$11.99",desc:"A crispy Belgian waffle with eggs, Applewood-smoked bacon and sausage links.",emoji:"🧇",badge:""},
+    {name:"French Toast Slam®",cal:"900–1310",price:"$11.49",desc:"Two slices of thick-cut brioche French toast with eggs, bacon and sausage.",emoji:"🍞",badge:""},
+  ],
+  "Pancakes & Crepes": [
+    {name:"Buttermilk Pancakes",cal:"770–1540",price:"$8.99",desc:"Fluffy made-from-scratch pancakes. Short stack or full stack with butter and maple syrup.",emoji:"🥞",badge:""},
+    {name:"Blueberry Pancakes",cal:"900–1580",price:"$10.49",desc:"Classic buttermilk pancakes stuffed and topped with sweet fresh blueberries.",emoji:"🫐",badge:""},
+    {name:"All You Can Eat Pancakes",cal:"varies",price:"$6.99",desc:"Unlimited fluffy buttermilk pancakes — keep 'em coming!",emoji:"♾️",badge:"Value"},
+    {name:"Salted Caramel Banana Pancake Slam®",cal:"1060–1490",price:"$14.99",desc:"Pancakes topped with vanilla cream, fresh bananas and salted caramel. With eggs, hash browns, bacon or sausage.",emoji:"🍌",badge:""},
+    {name:"Pumpkin Pecan Pancakes",cal:"1000–1600",price:"$11.99",desc:"Buttermilk pancakes with real pumpkin pie filling, topped with pecan pie sauce.",emoji:"🎃",badge:"Seasonal"},
+  ],
+  "Breakfasts": [
+    {name:"Moons Over My Hammy®",cal:"860–1240",price:"$13.49",desc:"Ham and scrambled egg sandwich with Swiss & American cheese on grilled sourdough. Served with hash browns.",emoji:"🌙",badge:"Fan Fave"},
+    {name:"Grand Slamwich®",cal:"900–1280",price:"$13.99",desc:"Scrambled eggs, sausage, bacon, ham and American cheese on sourdough with maple spice spread. Served with hash browns.",emoji:"🥪",badge:""},
+    {name:"Loaded Breakfast Burrito",cal:"800–1100",price:"$12.99",desc:"Scrambled eggs, cheddar, crispy bacon and hash browns grilled in a warm flour tortilla.",emoji:"🌯",badge:""},
+    {name:"Fit Slam®",cal:"430–600",price:"$11.99",desc:"Egg whites, turkey bacon, seasonal fresh fruit and an English muffin. A lighter start.",emoji:"🥗",badge:"Light"},
+    {name:"Veggie Omelette",cal:"490–730",price:"$12.99",desc:"Three-egg omelette with spinach, mushrooms, fire-roasted peppers & onions, tomatoes and Swiss. With hash browns and toast.",emoji:"🥚",badge:"Veggie"},
+    {name:"Open-Faced Biscuit & Gravy",cal:"710",price:"$8.99",desc:"A fluffy open-faced biscuit covered in rich savory sausage gravy.",emoji:"🍪",badge:""},
+    {name:"2-Egg Breakfast Slam®",cal:"670–990",price:"$5.99",desc:"Two eggs cooked your way with hash browns and toast.",emoji:"🍳",badge:"$5.99"},
+  ],
+  "Breakfast Sides": [
+    {name:"Hash Browns",cal:"210",price:"$3.99",desc:"Crispy golden hash browns, made to order.",emoji:"🥔",badge:""},
+    {name:"Buttermilk Pancakes (2)",cal:"385",price:"$4.99",desc:"Two fluffy buttermilk pancakes with butter and maple syrup.",emoji:"🥞",badge:""},
+    {name:"Bacon Strips (4)",cal:"160",price:"$4.49",desc:"Four strips of crispy Applewood-smoked bacon.",emoji:"🥓",badge:""},
+    {name:"Sausage Links (4)",cal:"320",price:"$4.49",desc:"Four all-pork sausage links, grilled perfectly.",emoji:"🌭",badge:""},
+    {name:"Fresh Fruit",cal:"70",price:"$3.99",desc:"A seasonal mix of fresh sliced fruit.",emoji:"🍓",badge:"Light"},
+    {name:"Grits",cal:"260",price:"$3.49",desc:"Creamy Southern-style grits, served hot.",emoji:"🍚",badge:""},
+  ],
+  "Starters": [
+    {name:"Zesty Nachos",cal:"1080–1310",price:"$11.99",desc:"Crispy tortilla chips loaded with melted cheddar, jalapeños, sour cream, salsa and green onions.",emoji:"🧀",badge:""},
+    {name:"Mozzarella Cheese Sticks",cal:"810",price:"$9.99",desc:"Golden-fried mozzarella sticks with marinara dipping sauce.",emoji:"🧀",badge:""},
+    {name:"Chicken Strips",cal:"760–1060",price:"$10.99",desc:"Crispy all-white-meat chicken strips with your choice of dipping sauce.",emoji:"🍗",badge:""},
+    {name:"Onion Ring Tower",cal:"1020",price:"$9.49",desc:"A towering stack of beer-battered crispy onion rings.",emoji:"🧅",badge:""},
+    {name:"Loaded Hash Brown Bowl",cal:"980",price:"$11.99",desc:"Crispy hash browns topped with cheddar, bacon, sour cream and green onions.",emoji:"🥣",badge:"Fan Fave"},
+  ],
+  "Salads": [
+    {name:"Garden Side Salad",cal:"150–370",price:"$5.99",desc:"Mixed greens, tomatoes, cucumbers, carrots and croutons with your choice of dressing.",emoji:"🥗",badge:""},
+    {name:"Cobb Salad",cal:"640–860",price:"$13.99",desc:"Grilled chicken, bacon, hard-boiled eggs, avocado, tomatoes, blue cheese and ranch.",emoji:"🥗",badge:""},
+    {name:"Caesar Salad",cal:"480–700",price:"$10.99",desc:"Crisp romaine, shaved parmesan, croutons and creamy Caesar dressing.",emoji:"🫒",badge:""},
+    {name:"Harvest Bowl",cal:"590",price:"$12.99",desc:"Whole grains, roasted vegetables, grilled chicken and balsamic vinaigrette.",emoji:"🌾",badge:"Light"},
+  ],
+  "Burgers": [
+    {name:"Classic Burger",cal:"700–940",price:"$12.49",desc:"Beef patty with lettuce, tomato, red onion and pickles on brioche. Served with fries.",emoji:"🍔",badge:""},
+    {name:"Bourbon Bacon Burger",cal:"1010–1250",price:"$14.99",desc:"Beef patty with bourbon sauce, Applewood-smoked bacon, mushrooms and Swiss on brioche.",emoji:"🥃",badge:"Fan Fave"},
+    {name:"Bacon Avocado Cheeseburger",cal:"940–1180",price:"$14.49",desc:"Fresh avocado, bacon, aged white cheddar, mayo, lettuce, tomato and red onions on brioche.",emoji:"🥑",badge:""},
+    {name:"Bacon Ranch Cheeseburger",cal:"920–1160",price:"$13.99",desc:"Crispy bacon, ranch, cheddar, lettuce, tomato and red onion on golden brioche.",emoji:"🍔",badge:"New"},
+    {name:"Slamburger®",cal:"780–1020",price:"$11.99",desc:"Beef patty with a fried egg, Applewood-smoked bacon, American cheese and mayo on brioche.",emoji:"🍔",badge:""},
+  ],
+  "Melts & Handhelds": [
+    {name:"Brisket Melt",cal:"900–1140",price:"$13.99",desc:"Slow-cooked beef brisket with caramelized onions and Swiss on grilled sourdough.",emoji:"🥩",badge:""},
+    {name:"Patty Melt",cal:"820–1060",price:"$12.49",desc:"Beef patty and caramelized onions with Swiss on grilled marble rye.",emoji:"🧅",badge:"Classic"},
+    {name:"Super Bird®",cal:"700–940",price:"$12.99",desc:"Sliced turkey, Applewood-smoked bacon, Swiss and tomato on grilled sourdough. With fries.",emoji:"🦃",badge:""},
+    {name:"BLT&E Slamwich®",cal:"670–890",price:"$5.99",desc:"Four strips of crispy bacon, a fried egg, lettuce, tomato and mayo on toasted sourdough.",emoji:"🥓",badge:"$5.99"},
+    {name:"Grand Slam Burrito",cal:"750–980",price:"$7.99",desc:"Bacon, sausage crumbles, scrambled eggs, hash browns and melted cheese in a warm tortilla. Served with salsa.",emoji:"🌯",badge:"New"},
+    {name:"Cali Club Combo",cal:"810–1050",price:"$14.49",desc:"Grilled chicken, avocado, bacon, Swiss, lettuce, tomato and pesto mayo on sourdough.",emoji:"🐔",badge:""},
+  ],
+  "Dinners & Skillets": [
+    {name:"Bourbon Chicken Sizzlin' Skillet",cal:"860–1100",price:"$14.99",desc:"Grilled chicken over seasoned potatoes with peppers, onions, mushrooms and bourbon sauce in a sizzling skillet.",emoji:"🍳",badge:"Fan Fave"},
+    {name:"Bourbon Bacon Sirloin Dinner",cal:"980–1240",price:"$17.99",desc:"USDA Choice 8-oz sirloin with bourbon sauce, caramelized onions, bacon and sautéed mushrooms.",emoji:"🥩",badge:"New"},
+    {name:"Fried Fish Platter",cal:"1050–1290",price:"$13.99",desc:"Wild-caught Alaska pollock fried golden brown with tartar sauce and two sides.",emoji:"🐟",badge:""},
+    {name:"T-Bone Steak & Eggs",cal:"950–1190",price:"$18.99",desc:"Juicy T-bone steak grilled to order, with two eggs your way and hash browns.",emoji:"🥩",badge:""},
+    {name:"Fit Fare® Veggie Sizzlin' Skillet",cal:"480",price:"$13.49",desc:"Spinach, mushrooms, fire-roasted peppers & onions with egg whites in a sizzling skillet.",emoji:"🥦",badge:"Light"},
+  ],
+  "Sides": [
+    {name:"French Fries",cal:"330",price:"$3.99",desc:"Golden, crispy fries — a classic side.",emoji:"🍟",badge:""},
+    {name:"Onion Rings",cal:"600",price:"$4.99",desc:"Beer-battered crispy onion rings.",emoji:"🧅",badge:""},
+    {name:"Coleslaw",cal:"170",price:"$2.99",desc:"Creamy homestyle coleslaw.",emoji:"🥗",badge:""},
+    {name:"Seasonal Vegetables",cal:"60",price:"$3.49",desc:"Fresh seasonal vegetables, steamed.",emoji:"🥦",badge:"Light"},
+  ],
+  "Denny's Deals": [
+    {name:"Everyday Value Slam®",cal:"830–1160",price:"$5.99",desc:"Two eggs, bacon or sausage, hash browns and toast. Classic breakfast at the best price.",emoji:"🍳",badge:"$5.99"},
+    {name:"2-Egg Breakfast Slam®",cal:"670–990",price:"$5.99",desc:"Two eggs your way, hash browns and toast.",emoji:"🥚",badge:"$5.99"},
+    {name:"BLT&E Slamwich®",cal:"670–890",price:"$5.99",desc:"Bacon, egg, lettuce, tomato and mayo on toasted sourdough.",emoji:"🥓",badge:"$5.99"},
+    {name:"All You Can Eat Pancakes",cal:"varies",price:"$6.99",desc:"Unlimited buttermilk pancakes. We'll keep making them.",emoji:"♾️",badge:""},
+    {name:"Classic Burger with Fries",cal:"1030–1270",price:"$8.00",desc:"Classic beef burger with all the fixings, served with crispy fries.",emoji:"🍔",badge:""},
+  ],
+  "Kids": [
+    {name:"BYO Jr. Grand Slam®",cal:"varies",price:"$5.99",desc:"Kids pick any two items: pancakes, eggs, bacon or sausage.",emoji:"⭐",badge:""},
+    {name:"Dino Nuggets",cal:"380",price:"$5.49",desc:"Dinosaur-shaped chicken nuggets with dipping sauce.",emoji:"🦕",badge:""},
+    {name:"Grilled Cheese",cal:"430",price:"$4.99",desc:"Classic grilled American cheese on white bread with a side of fruit.",emoji:"🧀",badge:""},
+    {name:"Jr. Cheeseburger",cal:"520",price:"$5.49",desc:"Small beef patty with American cheese on a soft bun, with fries.",emoji:"🍔",badge:""},
+    {name:"Mac & Cheese",cal:"460",price:"$4.99",desc:"Creamy mac and cheese made with real cheddar.",emoji:"🍝",badge:""},
+  ],
+  "55+": [
+    {name:"55+ Scrambled Egg & Cheddar Breakfast",cal:"540",price:"$8.99",desc:"Scrambled eggs with cheddar, bacon or sausage, hash browns and toast.",emoji:"🍳",badge:"55+"},
+    {name:"55+ Buttermilk Pancakes",cal:"390",price:"$7.99",desc:"Two fluffy buttermilk pancakes with butter and maple syrup.",emoji:"🥞",badge:"55+"},
+    {name:"55+ Sandwich & Soup",cal:"varies",price:"$8.99",desc:"A half sandwich with a cup of soup — lighter comfort food.",emoji:"🥣",badge:"55+"},
+    {name:"55+ Grilled Chicken Dinner",cal:"520",price:"$9.99",desc:"Grilled chicken breast with two sides.",emoji:"🍗",badge:"55+"},
+  ],
+  "Family Pack": [
+    {name:"Grand Slam Pack",cal:"4000–4460",price:"$30.99",desc:"Pancakes, eggs, bacon and sausage in a large shareable family pack.",emoji:"📦",badge:"Family"},
+    {name:"Pancake Pack",cal:"2300–3080",price:"$18.99",desc:"A big stack of buttermilk pancakes for the whole table.",emoji:"🥞",badge:"Family"},
+    {name:"Chicken Strip Family Pack",cal:"varies",price:"$24.99",desc:"Large order of crispy chicken strips with fries and sauces for the whole family.",emoji:"🍗",badge:"Family"},
+  ],
+  "Desserts": [
+    {name:"Cookie Dough Lover's Pie",cal:"680",price:"$6.99",desc:"Warm, gooey cookie dough pie topped with vanilla ice cream.",emoji:"🍪",badge:"Fan Fave"},
+    {name:"Pancake Puppies®",cal:"680",price:"$5.99",desc:"Bite-sized pancake bites dusted with powdered sugar.",emoji:"🐾",badge:""},
+    {name:"Hot Fudge Brownie à la Mode",cal:"870",price:"$7.49",desc:"Warm chocolate brownie topped with vanilla ice cream and hot fudge.",emoji:"🍫",badge:""},
+    {name:"Pumpkin Pie",cal:"380–3040",price:"$3.99",desc:"Classic pumpkin pie with whipped cream. Slice or whole pie.",emoji:"🥧",badge:"Seasonal"},
+    {name:"Pecan Pie",cal:"520–4160",price:"$3.99",desc:"Rich and sweet pecan pie. Slice or whole pie.",emoji:"🥧",badge:"Seasonal"},
+  ],
+  "Milkshakes": [
+    {name:"Classic Vanilla Shake",cal:"720",price:"$6.49",desc:"Thick and creamy hand-scooped vanilla milkshake.",emoji:"🥤",badge:""},
+    {name:"Chocolate Shake",cal:"760",price:"$6.49",desc:"Rich chocolate milkshake — a timeless classic.",emoji:"🍫",badge:""},
+    {name:"Strawberry Shake",cal:"700",price:"$6.49",desc:"Sweet strawberry milkshake with real strawberry pieces.",emoji:"🍓",badge:""},
+    {name:"Oreo® Shake",cal:"980",price:"$7.49",desc:"Creamy vanilla shake blended with Oreo® cookie pieces.",emoji:"🍪",badge:""},
+    {name:"Salted Caramel Shake",cal:"850",price:"$7.49",desc:"Vanilla soft serve swirled with salted caramel sauce.",emoji:"🧂",badge:""},
+  ],
+  "Beverages": [
+    {name:"Fresh Brewed Coffee",cal:"5",price:"$2.99",desc:"Hot, fresh-brewed Denny's coffee — unlimited refills.",emoji:"☕",badge:""},
+    {name:"Salted Caramel Cold Brew",cal:"410",price:"$6.69",desc:"Smooth cold brew with salted caramel and sweet cream.",emoji:"🧊",badge:"New"},
+    {name:"Sweet & Creamy Cold Brew",cal:"210",price:"$5.89",desc:"Cold brew topped with smooth sweet cream.",emoji:"🧊",badge:"New"},
+    {name:"Fresh Squeezed Orange Juice",cal:"110",price:"$3.99",desc:"100% fresh-squeezed orange juice.",emoji:"🍊",badge:""},
+    {name:"Soft Drinks",cal:"150–310",price:"$2.99",desc:"Pepsi, Mountain Dew, Sierra Mist, Dr Pepper and more.",emoji:"🥤",badge:""},
+    {name:"Slammin'™ Sodas",cal:"varies",price:"$3.99",desc:"Dr Pepper, Coca-Cola or Sprite with sweet cream and lime.",emoji:"✨",badge:"New"},
+  ]
+};
+
+// ── SYSTEM PROMPT (keeps token cost low) ─────────────────────────────
+const SYS = `You are Denny's friendly AI dining assistant. Recommend ONLY items from this menu with prices. Keep replies with 2 complete sentence.
+
+MENU HIGHLIGHTS:
+Deals($5.99-$8): Everyday Value Slam, 2-Egg Breakfast Slam, BLT&E Slamwich, All You Can Eat Pancakes($6.99), Classic Burger+Fries($8)
+Slams: Grand Slam($10.99), All-American($13.49), Lumberjack($14.49), Build Your Own($8.99), Super Slam($9.99), Belgian Waffle($11.99), French Toast($11.49)
+Breakfast: Moons Over My Hammy($13.49), Grand Slamwich($13.99), Loaded Burrito($12.99), Fit Slam($11.99-light), Veggie Omelette($12.99), Biscuit&Gravy($8.99)
+Pancakes: Buttermilk($8.99), Blueberry($10.49), All You Can Eat($6.99), Salted Caramel Banana Slam($14.99)
+Burgers: Classic($12.49), Bourbon Bacon($14.99), Bacon Avocado($14.49), Slamburger($11.99), Triple Juicy($15.99)
+Melts: Patty Melt($12.49), Brisket Melt($13.99), Super Bird($12.99), Grand Slam Burrito($7.99)
+Dinners: Bourbon Chicken Skillet($14.99), Sirloin Dinner($17.99), Fish Platter($13.99), T-Bone+Eggs($18.99)
+Starters: Nachos($11.99), Cheese Sticks($9.99), Chicken Strips($10.99), Hash Brown Bowl($11.99)
+Salads: Garden($5.99), Cobb($13.99), Caesar($10.99), Harvest Bowl($12.99)
+Kids($4.99-$5.99): Jr.Grand Slam, Dino Nuggets, Grilled Cheese, Jr.Burger, Mac&Cheese — FREE Tuesdays 4-10pm
+55+($7.99-$9.99): Egg&Cheddar Breakfast, Pancakes, Sandwich&Soup, Chicken Dinner
+Desserts: Cookie Dough Pie($6.99), Pancake Puppies($5.99), Brownie à la Mode($7.49), Pumpkin Pie($3.99)
+Shakes: Vanilla/Choc/Strawberry($6.49), Oreo/Salted Caramel($7.49)
+Drinks: Coffee($2.99), Cold Brew($5.89-$6.69), OJ($3.99), Sodas($2.99), Slammin' Sodas($3.99)
+Open 24/7. All-day breakfast. Rewards: 10 Booth Bucks per $1 spent.`;
+
+// ── GEMINI API CALL ────────────────────────────────────────────────────────
+const GEMINI_URL = key => `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+
+async function callGemini(userMsg, includeHistory = false) {
+  const contents = [];
+  // Add conversation history for chat (keeps context short)
+  if (includeHistory) {
+    const trimmed = history.slice(-6); // only last 3 turns to save tokens
+    for (const m of trimmed) {
+      contents.push({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] });
+    }
+  }
+  contents.push({ role: 'user', parts: [{ text: userMsg }] });
+
+  const res = await fetch(GEMINI_URL(key), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: SYS }] },
+      contents,
+      generationConfig: { maxOutputTokens: 800, temperature: 0.7 }
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response.';
+}
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let key = '', chatOpen = false, searchOpen = false, history = [], curTab = 'Featured';
+
+function saveKey() {
+  const v = document.getElementById('apiKey').value.trim();
+  if (!v.startsWith('AIza')) { alert('Please enter a valid Google AI Studio key (starts with AIza)'); return; }
+  key = v;
+  sessionStorage.setItem('dnkey', v);
+  document.getElementById('apiBanner').classList.remove('show');
+}
+
+function init() {
+  const s = sessionStorage.getItem('dnkey');
+  if (s) { key = s; document.getElementById('apiBanner').classList.remove('show'); }
+  renderTabs(); renderMenu('Featured');
+}
+
+// ── MENU RENDER ────────────────────────────────────────────────────────────
+function renderTabs() {
+  document.getElementById('tabRow').innerHTML = Object.keys(MENU).map(t =>
+    `<button class="tab${t === curTab ? ' on' : ''}" onclick="switchTab('${t}',this)">${t}</button>`
+  ).join('');
+}
+function switchTab(t, btn) {
+  curTab = t;
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on'); renderMenu(t);
+}
+function renderMenu(t) {
+  document.getElementById('grid').innerHTML = MENU[t].map(i => `
+    <div class="card">
+      <div class="card-img">${i.emoji}</div>
+      <div class="card-body">
+        <div class="card-name">${i.name}${i.badge ? `<span class="badge">${i.badge}</span>` : ''}</div>
+        <div class="card-cal">${i.cal} Cal</div>
+        <div class="card-desc">${i.desc}</div>
+        <div class="card-foot">
+          <span class="card-price">${i.price}</span>
+          <button class="card-add">+ Order</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── AI SEARCH ──────────────────────────────────────────────────────────────
+function toggleSearch() {
+  searchOpen = !searchOpen;
+  document.getElementById('searchBar').classList.toggle('open', searchOpen);
+  if (searchOpen) document.getElementById('searchQ').focus();
+  if (!searchOpen) document.getElementById('searchRes').classList.remove('on');
+}
+async function doSearch() {
+  const q = document.getElementById('searchQ').value.trim(); if (!q) return;
+  const res = document.getElementById('searchRes'), body = document.getElementById('searchBody');
+  res.classList.add('on'); body.innerHTML = '<div class="sr-thinking">🤖 Searching menu...</div>';
+  if (!key) { body.innerHTML = '<div class="sr-answer"><strong>API key needed:</strong> Enter your Google AI Studio key in the banner above.</div>'; return; }
+  try {
+    const reply = await callGemini('Search query: ' + q, false);
+    body.innerHTML = `<div class="sr-answer"><strong>Results for "${q}":</strong><br><br>${reply}</div>`;
+  } catch (e) {
+    body.innerHTML = `<div class="sr-answer" style="color:var(--red)">Error: ${e.message}</div>`;
+  }
+}
+
+// ── CHATBOT ────────────────────────────────────────────────────────────────
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chatWin').classList.toggle('open', chatOpen);
+  if (chatOpen && history.length === 0) addMsg('bot', "Hey! 👋 I'm Virtual Denny's Stuff, powered by Gemini. Ask me what to order and I'll recommend the best menu from our real menu — with prices!");
+  if (chatOpen) setTimeout(() => document.getElementById('chatIn').focus(), 60);
+}
+function qsend(el) {
+  document.getElementById('chatIn').value = el.textContent;
+  document.getElementById('chips').style.display = 'none';
+  send();
+}
+function addMsg(role, text) {
+  const m = document.getElementById('msgs'), d = document.createElement('div');
+  d.className = `msg ${role}`; d.textContent = text; m.appendChild(d); m.scrollTop = m.scrollHeight; return d;
+}
+async function send() {
+  const inp = document.getElementById('chatIn'), txt = inp.value.trim(); if (!txt) return;
+  inp.value = ''; addMsg('user', txt);
+  if (!key) { addMsg('bot', 'Please enter your Google AI Studio API key in the banner at the top! 🔑'); return; }
+  history.push({ role: 'user', content: txt });
+  const t = addMsg('thinking', 'Denny Bot is typing...');
+  try {
+    const reply = await callGemini(txt, true);
+    t.remove(); addMsg('bot', reply);
+    history.push({ role: 'assistant', content: reply });
+    if (history.length > 20) history = history.slice(-20);
+  } catch (e) { t.remove(); addMsg('bot', `Oops: ${e.message}`); }
+}
+
+function go(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); }
+init();
+</script>
+</body>
+</html>
