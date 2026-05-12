@@ -4,6 +4,7 @@ Term Project for Group 3 CSULB CECS 458 Deep Learning Spring 2026
 This is a Netflix-style movie discovery website powered by an AI chatbot.
 
 How to Run:
+
 Step 1 — Open the file
 
 Step 2 — Get your API keys (TMDB API Key, Gemini API Key)
