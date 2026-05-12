@@ -40,4 +40,5 @@ AI systems:
   "I'm hungry but I don't have much money"
 
   Quick-tap chips are available for common questions
+  
   The chatbot remembers the last 3 conversation turns, so you can ask follow-up questions
