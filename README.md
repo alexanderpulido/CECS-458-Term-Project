@@ -13,35 +13,31 @@ How to Run:
 
 - Step
   
-Step 1 — Download Dennys-website.html from this repository and Open the file
+  Step 1 — Download Dennys-website.html from this repository and Open the file
 
-Step 2 — Get your API keys (Gemini API Key)
+  Step 2 — Get your API keys (Gemini API Key)
 
-Step 3 — A blue banner will appear at the top asking for your API key
+  Step 3 — A blue banner will appear at the top asking for your API key
 
-Step 4 - Use AI powered system, the AI chatbot and AI search are now active
+  Step 4 - Use AI powered system, the AI chatbot and AI search are now active
 
 AI systems:
 
 - AI Search
 
-Click the 🔍 icon in the navigation bar
-Type any natural language query — for example:
-"cheap but filling"
-"low calorie breakfast"
-"something sweet under $8"
-"gluten-free options"
+  Click the 🔍 icon in the navigation bar
+  Type any natural language query — for example:
+  "cheap but filling"
+  "low calorie breakfast"
 
-The AI returns relevant menu suggestions based on your query, no exact item names needed
+  The AI returns relevant menu suggestions based on your query, no exact item names needed
 
 - AI Chatbot (Denny Bot)
   
-Click the 💬 button in the bottom-right corner
-Ask anything about the menu in natural language — for example:
-"What's the difference between the Lumberjack Slam and the All-American Slam?"
-"I'm hungry but I don't have much money"
-"What do you recommend for kids?"
-"Which Slam has the most calories?"
+  Click the 💬 button in the bottom-right corner
+  Ask anything about the menu in natural language — for example:
+  "What's the difference between the Lumberjack Slam and the All-American Slam?"
+  "I'm hungry but I don't have much money"
 
-Quick-tap chips are available for common questions
-The chatbot remembers the last 3 conversation turns, so you can ask follow-up questions
+  Quick-tap chips are available for common questions
+  The chatbot remembers the last 3 conversation turns, so you can ask follow-up questions
